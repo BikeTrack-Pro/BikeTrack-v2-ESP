@@ -1,0 +1,3 @@
+[submodule "components/lsm6dso32/lsm6dso32-pid"]
+	path = components/lsm6dso32/lsm6dso32-pid
+	url = https://github.com/STMicroelectronics/lsm6dso32-pid
