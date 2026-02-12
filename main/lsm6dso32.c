@@ -177,13 +177,13 @@ void platform_fifo_setup(const stmdev_ctx_t *dev_ctx) {
     // Set watermark (ex. 120 Samples, because dividable by 3 for X, Y, Z)
     lsm6dso32_fifo_watermark_set(dev_ctx, FIFO_WATERMARK);
 
+    //
+    lsm6dso32_fifo_stop_on_wtm_set(dev_ctx, PROPERTY_DISABLE);
+
     // We are only interested in the Accelerometer-data in the FIFO (max update rate)
     // IMPORTANT: Because of this, we know that only XL data is in FIFO
     lsm6dso32_fifo_gy_batch_set(dev_ctx, LSM6DSO32_GY_NOT_BATCHED);
     lsm6dso32_fifo_xl_batch_set(dev_ctx, LSM6DSO32_XL_BATCHED_AT_6667Hz);
-
-    // Set FIFO mode to stream (Continuous)
-    lsm6dso32_fifo_mode_set(dev_ctx, LSM6DSO32_STREAM_MODE);
 
     // Route interrupt to INT1
     lsm6dso32_pin_int1_route_t int1_route;
@@ -239,6 +239,21 @@ esp_err_t platform_fifo_bulk_read(const stmdev_ctx_t *dev_ctx, uint8_t *buffer, 
  * @return 0 if the configuration is successful. Returns a negative
  * value in case of an error.
  */
-int32_t configure_xl_scale(const stmdev_ctx_t *dev_ctx, const lsm6dso32_fs_xl_t value) {
+int32_t configure_xl(const stmdev_ctx_t *dev_ctx, const lsm6dso32_fs_xl_t value) {
+    // Set the accelerometer to High-Performance-Mode and to its highest data rate
+    lsm6dso32_xl_data_rate_set(dev_ctx, LSM6DSO32_XL_ODR_6667Hz_HIGH_PERF);
+    // Set the scale of the accelerometer to the given scale
     return lsm6dso32_xl_full_scale_set(dev_ctx, value);
+}
+
+
+void set_fifo_mode_stream(const stmdev_ctx_t *dev_ctx) {
+    // Set FIFO mode to stream (Continuous)
+    lsm6dso32_fifo_mode_set(dev_ctx, LSM6DSO32_STREAM_MODE);
+}
+
+
+void set_fifo_mode_bypass(const stmdev_ctx_t *dev_ctx) {
+    // FIFO in Bypass (Reset)
+    lsm6dso32_fifo_mode_set(dev_ctx, LSM6DSO32_BYPASS_MODE);
 }

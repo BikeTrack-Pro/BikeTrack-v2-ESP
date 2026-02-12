@@ -1,8 +1,8 @@
-#ifndef BMP5_ESP32_INTERFACE_H
-#define BMP5_ESP32_INTERFACE_H
+#ifndef BMP5_INTERFACE_H
+#define BMP5_INTERFACE_H
 
+#include <driver/i2c_master.h>
 #include <bmp5_defs.h>
-#include "driver/i2c_master.h"
 
 
 /**
@@ -20,4 +20,4 @@ BMP5_INTF_RET_TYPE bmp5_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uin
  */
 void bmp5_delay_us(uint32_t period, void *intf_ptr);
 
-#endif // BMP5_ESP32_INTERFACE_H
+#endif
