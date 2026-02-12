@@ -1,3 +1,6 @@
 [submodule "components/lsm6dso32/lsm6dso32-pid"]
 	path = components/lsm6dso32/lsm6dso32-pid
 	url = https://github.com/STMicroelectronics/lsm6dso32-pid
+[submodule "components/bmp5/BMP5_SensorAPI"]
+	path = components/bmp5/BMP5_SensorAPI
+	url = https://github.com/boschsensortec/BMP5_SensorAPI
