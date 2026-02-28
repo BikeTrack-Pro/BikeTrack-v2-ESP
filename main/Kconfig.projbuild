@@ -53,30 +53,7 @@ menu "BikeTrack config"
                 Select the SCL-GPIO pin for the I2C-connection.
     endmenu
 
-    menu "LSM6DSO32 config"
-        config BIKETRACK_IMU_WATERMARK
-            int "IMU transfer threshold value"
-            default 480
-            range 1 512
-            help
-                Select the threshold value, when the Accelerometer-values should be transferred from the FIFO to the chip. Maximum is 512.
-
-        config BIKETRACK_IMU_INT1
-            int "IMU INT1 - GPIO"
-            default 4
-            range 0 39
-            help
-                Select the Interrupt pin 1 for the IMU-chip.
-
-        config BIKETRACK_IMU_INT2
-            int "IMU INT2 - GPIO"
-            default 3
-            range 0 39
-            help
-                Select the Interrupt pin 2 for the IMU-chip.
-    endmenu
-
-	menu "IMU task config"
+    menu "IMU config"
 		config BIKETRACK_IMU_TASK_PRIORITY
 			int "Priority of the IMU task"
 			range 1 25
@@ -97,9 +74,30 @@ menu "BikeTrack config"
 			default 1
 			help
 				The core to which the IMU task is pinned to.
+
+        config BIKETRACK_IMU_WATERMARK
+            int "IMU transfer threshold value"
+            default 480
+            range 1 512
+            help
+                Select the threshold value, when the Accelerometer-values should be transferred from the FIFO to the chip. Maximum is 512.
+
+        config BIKETRACK_IMU_INT1
+            int "IMU INT1 - GPIO"
+            default 4
+            range 0 39
+            help
+                Select the Interrupt pin 1 for the IMU-chip.
+
+        config BIKETRACK_IMU_INT2
+            int "IMU INT2 - GPIO"
+            default 3
+            range 0 39
+            help
+                Select the Interrupt pin 2 for the IMU-chip.
 	endmenu
 
-	menu "Barometer task config"
+	menu "Barometer config"
 		config BIKETRACK_BAROMETER_TASK_PRIORITY
 			int "Priority of the barometer task"
 			range 1 25
@@ -129,7 +127,7 @@ menu "BikeTrack config"
                 Select the SCL speed in hz at which the I2C-connection should be run at.
 	endmenu
 
-	menu "Battery task config"
+	menu "Battery config"
 		config BIKETRACK_BATTERY_TASK_PRIORITY
 			int "Priority of the battery task"
 			range 1 25
@@ -158,11 +156,18 @@ menu "BikeTrack config"
             help
                 Select the SCL speed in hz at which the I2C-connection should be run at.
 
+        config BIKETRACK_BATTERY_INTERRUPT_PIN
+            int "MAX17048 Interrupt - GPIO"
+            default 2
+            range 0 39
+            help
+                Select the Interrupt pin for the MAX17048-battery-chip.
+
         config BIKETRACK_BATTERY_TASK_INTERVAL_MS
             int "Battery Task Sleep Interval (ms)"
-            default 1000
+            default 20000
             help
-                Time span in milliseconds that the Battery Task waits between two measurements.
+                Time span in milliseconds that the Battery Task waits between two measurements. Given no Interrupt is fired in the meantime.
 	endmenu
 
 	menu "Data-processing task config"
