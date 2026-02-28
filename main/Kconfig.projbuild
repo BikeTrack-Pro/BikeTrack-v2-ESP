@@ -14,7 +14,7 @@ menu "BikeTrack config"
           The Revision number of the used software. In the format "Major.Minor.Patch". Example: 1.0.2
     endmenu
 
-    menu "SPI config"
+    menu "GPIO setup"
         config BIKETRACK_SPI_CLK
             int "SPI CLK - GPIO"
             default 7
@@ -43,15 +43,6 @@ menu "BikeTrack config"
             help
                 Select the CS-GPIO pin for the SPI IMU-chip.
 
-        config BIKETRACK_SPI_CLK_SPEED
-            int "SPI CLK Speed"
-            default 10000000
-            range 1 10000000
-            help
-                Select the CLK speed in hz at which the SPI-connection should be run at.
-    endmenu
-
-    menu "I2C config"
         config BIKETRACK_I2C_SDA
             int "I2C MOSI - GPIO"
             default 5
@@ -65,36 +56,6 @@ menu "BikeTrack config"
             range 0 39
             help
                 Select the SCL-GPIO pin for the I2C-connection.
-    endmenu
-
-    menu "IMU config"
-		config BIKETRACK_IMU_TASK_PRIORITY
-			int "Priority of the IMU task"
-			range 1 25
-			default 1
-			help
-				The priority at which the IMU-task should run. Higher number equals higher priority.
-
-		config BIKETRACK_IMU_TASK_STACK_SIZE
-			int "Stack size of the IMU task"
-			range 1024 32768
-			default 8192
-			help
-				The size of the IMU-task stack specified as the NUMBER OF BYTES.
-
-		config BIKETRACK_IMU_TASK_CORE
-			int "Core to run the IMU task on"
-			range 0 1
-			default 1
-			help
-				The core to which the IMU task is pinned to.
-
-        config BIKETRACK_IMU_WATERMARK
-            int "IMU transfer threshold value"
-            default 480
-            range 1 512
-            help
-                Select the threshold value, when the Accelerometer-values should be transferred from the FIFO to the chip. Maximum is 512.
 
         config BIKETRACK_IMU_INT1
             int "IMU INT1 - GPIO"
@@ -109,29 +70,77 @@ menu "BikeTrack config"
             range 0 39
             help
                 Select the Interrupt pin 2 for the IMU-chip.
+
+        config BIKETRACK_BATTERY_INTERRUPT_PIN
+            int "MAX17048 Interrupt - GPIO"
+            default 2
+            range 0 39
+            help
+                Select the Interrupt pin for the MAX17048-battery-chip.
+    endmenu
+
+    menu "IMU config"
+        menu "IMU task config"
+            config BIKETRACK_IMU_TASK_PRIORITY
+                int "Priority of the IMU task"
+                range 1 25
+                default 1
+                help
+                    The priority at which the IMU-task should run. Higher number equals higher priority.
+
+            config BIKETRACK_IMU_TASK_STACK_SIZE
+                int "Stack size of the IMU task"
+                range 1024 32768
+                default 8192
+                help
+                    The size of the IMU-task stack specified as the NUMBER OF BYTES.
+
+            config BIKETRACK_IMU_TASK_CORE
+                int "Core to run the IMU task on"
+                range 0 1
+                default 1
+                help
+                    The core to which the IMU task is pinned to.
+        endmenu
+
+        config BIKETRACK_SPI_CLK_SPEED
+            int "SPI CLK Speed"
+            default 10000000
+            range 1 10000000
+            help
+                Select the CLK speed in hz at which the SPI-connection should be run at.
+
+        config BIKETRACK_IMU_WATERMARK
+            int "IMU transfer threshold value"
+            default 480
+            range 1 512
+            help
+                Select the threshold value, when the Accelerometer-values should be transferred from the FIFO to the chip. Maximum is 512.
 	endmenu
 
 	menu "Barometer config"
-		config BIKETRACK_BAROMETER_TASK_PRIORITY
-			int "Priority of the barometer task"
-			range 1 25
-			default 4
-			help
-				The priority at which the barometer-task should run. Higher number equals higher priority.
+        menu "Barometer task config"
+            config BIKETRACK_BAROMETER_TASK_PRIORITY
+                int "Priority of the barometer task"
+                range 1 25
+                default 4
+                help
+                    The priority at which the barometer-task should run. Higher number equals higher priority.
 
-		config BIKETRACK_BAROMETER_TASK_STACK_SIZE
-			int "Stack size of the barometer task"
-			range 1024 32768
-			default 8192
-			help
-				The size of the barometer-task stack specified as the NUMBER OF BYTES.
+            config BIKETRACK_BAROMETER_TASK_STACK_SIZE
+                int "Stack size of the barometer task"
+                range 1024 32768
+                default 8192
+                help
+                    The size of the barometer-task stack specified as the NUMBER OF BYTES.
 
-		config BIKETRACK_BAROMETER_TASK_CORE
-			int "Core to run the barometer task on"
-			range 0 1
-			default 1
-			help
-				The core to which the barometer task is pinned to.
+            config BIKETRACK_BAROMETER_TASK_CORE
+                int "Core to run the barometer task on"
+                range 0 1
+                default 1
+                help
+                    The core to which the barometer task is pinned to.
+        endmenu
 
         config BIKETRACK_BAROMETER_I2C_SCL_SPEED
             int "I2C SCL Speed"
@@ -142,26 +151,28 @@ menu "BikeTrack config"
 	endmenu
 
 	menu "Battery config"
-		config BIKETRACK_BATTERY_TASK_PRIORITY
-			int "Priority of the battery task"
-			range 1 25
-			default 5
-			help
-				The priority at which the battery-task should run. Higher number equals higher priority.
+        menu "Battery task config"
+            config BIKETRACK_BATTERY_TASK_PRIORITY
+                int "Priority of the battery task"
+                range 1 25
+                default 5
+                help
+                    The priority at which the battery-task should run. Higher number equals higher priority.
 
-		config BIKETRACK_BATTERY_TASK_STACK_SIZE
-			int "Stack size of the battery task"
-			range 1024 32768
-			default 8192
-			help
-				The size of the battery-task stack specified as the NUMBER OF BYTES.
+            config BIKETRACK_BATTERY_TASK_STACK_SIZE
+                int "Stack size of the battery task"
+                range 1024 32768
+                default 8192
+                help
+                    The size of the battery-task stack specified as the NUMBER OF BYTES.
 
-		config BIKETRACK_BATTERY_TASK_CORE
-			int "Core to run the battery task on"
-			range 0 1
-			default 1
-			help
-				The core to which the battery task is pinned to.
+            config BIKETRACK_BATTERY_TASK_CORE
+                int "Core to run the battery task on"
+                range 0 1
+                default 1
+                help
+                    The core to which the battery task is pinned to.
+        endmenu
 
         config BIKETRACK_BATTERY_I2C_SCL_SPEED
             int "I2C SCL Speed"
@@ -170,13 +181,6 @@ menu "BikeTrack config"
             help
                 Select the SCL speed in hz at which the I2C-connection should be run at.
 
-        config BIKETRACK_BATTERY_INTERRUPT_PIN
-            int "MAX17048 Interrupt - GPIO"
-            default 2
-            range 0 39
-            help
-                Select the Interrupt pin for the MAX17048-battery-chip.
-
         config BIKETRACK_BATTERY_TASK_INTERVAL_MS
             int "Battery Task Sleep Interval (ms)"
             default 20000
@@ -184,50 +188,54 @@ menu "BikeTrack config"
                 Time span in milliseconds that the Battery Task waits between two measurements. Given no Interrupt is fired in the meantime.
 	endmenu
 
-	menu "Data-processing task config"
-		config BIKETRACK_DATA_PROCESSING_TASK_PRIORITY
-			int "Priority of the data-processing task"
-			range 1 25
-			default 2
-			help
-				The priority at which the data-processing task should run. Higher number equals higher priority.
+    menu "Data-processing config"
+        menu "Data-processing task config"
+            config BIKETRACK_DATA_PROCESSING_TASK_PRIORITY
+                int "Priority of the data-processing task"
+                range 1 25
+                default 2
+                help
+                    The priority at which the data-processing task should run. Higher number equals higher priority.
 
-		config BIKETRACK_DATA_PROCESSING_TASK_STACK_SIZE
-			int "Stack size of the data-processing task"
-			range 1024 32768
-			default 4096
-			help
-				The size of the data-processing task stack specified as the NUMBER OF BYTES.
+            config BIKETRACK_DATA_PROCESSING_TASK_STACK_SIZE
+                int "Stack size of the data-processing task"
+                range 1024 32768
+                default 4096
+                help
+                    The size of the data-processing task stack specified as the NUMBER OF BYTES.
 
-		config BIKETRACK_DATA_PROCESSING_TASK_CORE
-			int "Core to run the data-processing task on"
-			range 0 1
-			default 1
-			help
-				The core to which the data-processing task is pinned to.
-	endmenu
+            config BIKETRACK_DATA_PROCESSING_TASK_CORE
+                int "Core to run the data-processing task on"
+                range 0 1
+                default 1
+                help
+                    The core to which the data-processing task is pinned to.
+        endmenu
+    endmenu
 
-	menu "BLE task config"
-		config BIKETRACK_BLE_TASK_PRIORITY
-			int "Priority of the BLE task"
-			range 1 25
-			default 1
-			help
-				The priority at which the BLE task should run. Higher number equals higher priority.
+    menu "BLE config"
+        menu "BLE task config"
+            config BIKETRACK_BLE_TASK_PRIORITY
+                int "Priority of the BLE task"
+                range 1 25
+                default 1
+                help
+                    The priority at which the BLE task should run. Higher number equals higher priority.
 
-		config BIKETRACK_BLE_TASK_STACK_SIZE
-			int "Stack size of the BLE task"
-			range 1024 32768
-			default 4096
-			help
-				The size of the BLE task stack specified as the NUMBER OF BYTES.
+            config BIKETRACK_BLE_TASK_STACK_SIZE
+                int "Stack size of the BLE task"
+                range 1024 32768
+                default 4096
+                help
+                    The size of the BLE task stack specified as the NUMBER OF BYTES.
 
-		config BIKETRACK_BLE_TASK_CORE
-			int "Core to run the BLE task on"
-			range 0 1
-			default 0
-			help
-				The core to which the BLE task is pinned to.
-	endmenu
+            config BIKETRACK_BLE_TASK_CORE
+                int "Core to run the BLE task on"
+                range 0 1
+                default 0
+                help
+                    The core to which the BLE task is pinned to.
+        endmenu
+    endmenu
 
 endmenu
