@@ -43,6 +43,27 @@ static int battery_level_access_cb(uint16_t conn_handle, const uint16_t attr_han
 }
 
 
+static int ctrl_chr_cb(uint16_t conn_handle, uint16_t attr_handle,
+                       struct ble_gatt_access_ctxt *ctxt, void *_) {
+    if (ctxt->op == BLE_GATT_ACCESS_OP_READ_CHR) {
+        const uint8_t val = is_recording ? 1 : 0;
+        return os_mbuf_append(ctxt->om, &val, sizeof(val));
+    }
+
+    if (ctxt->op == BLE_GATT_ACCESS_OP_WRITE_CHR) {
+        uint8_t data;
+
+        if (OS_MBUF_PKTLEN(ctxt->om) != 1) return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
+
+        os_mbuf_copydata(ctxt->om, 0, 1, &data);
+        // TODO: ...
+        return 0;
+    }
+
+    return BLE_ATT_ERR_UNLIKELY;
+}
+
+
 static int imu_access_cb(uint16_t conn_handle, const uint16_t attr_handle,
                          struct ble_gatt_access_ctxt *ctxt, void *_) {
     if (ctxt->op == BLE_GATT_ACCESS_OP_READ_CHR) {
@@ -102,6 +123,11 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
         .uuid = &bikeTrack_svc_uuid.u, // ---------------------------------------------- Custom BikeTrack Service
         .characteristics = (struct ble_gatt_chr_def[])
         {
+            {
+                .uuid = &ctrl_chr_uuid.u,
+                .access_cb = ctrl_chr_cb,
+                .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_WRITE,
+            },
             {
                 .uuid = &imu_chr_uuid.u,
                 .access_cb = imu_access_cb,
