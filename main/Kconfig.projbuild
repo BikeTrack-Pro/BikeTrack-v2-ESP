@@ -1,5 +1,19 @@
 menu "BikeTrack config"
 
+    menu "General BikeTrack config"
+        config BIKETRACK_HW_REVISION
+        string "Hardware Revision Nr."
+        default "1.0.0"
+        help
+          The Revision number of the used hardware. In the format "Major.Minor.Patch". Example: 1.0.2
+
+        config BIKETRACK_SW_REVISION
+        string "Software Revision Nr."
+        default "1.0.0"
+        help
+          The Revision number of the used software. In the format "Major.Minor.Patch". Example: 1.0.2
+    endmenu
+
     menu "SPI config"
         config BIKETRACK_SPI_CLK
             int "SPI CLK - GPIO"

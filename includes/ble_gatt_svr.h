@@ -4,6 +4,7 @@
 #include <host/ble_uuid.h>
 
 
+// TODO: Generate truly random UUIDs
 // Service UUIDs
 static const ble_uuid128_t bikeTrack_svc_uuid = BLE_UUID128_INIT(0x2d, 0x71, 0xa2, 0x59, 0xb4, 0x58, 0xc8, 0x12,
                                                                  0x99, 0x99, 0x43, 0x95, 0x12, 0x2f, 0x46, 0x59);

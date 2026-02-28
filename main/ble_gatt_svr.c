@@ -14,6 +14,26 @@ uint16_t imu_handle;
 uint16_t bmp_handle;
 
 
+static int hw_rev_access_cb(uint16_t conn_handle, const uint16_t attr_handle,
+                            struct ble_gatt_access_ctxt *ctxt, void *_) {
+    if (ctxt->op == BLE_GATT_ACCESS_OP_READ_CHR) {
+        const char *hw_rev = CONFIG_BIKETRACK_HW_REVISION;
+        return os_mbuf_append(ctxt->om, hw_rev, strlen(hw_rev));
+    }
+    return BLE_ATT_ERR_UNLIKELY;
+}
+
+
+static int sw_rev_access_cb(uint16_t conn_handle, const uint16_t attr_handle,
+                            struct ble_gatt_access_ctxt *ctxt, void *_) {
+    if (ctxt->op == BLE_GATT_ACCESS_OP_READ_CHR) {
+        const char *sw_rev = CONFIG_BIKETRACK_SW_REVISION;
+        return os_mbuf_append(ctxt->om, sw_rev, strlen(sw_rev));
+    }
+    return BLE_ATT_ERR_UNLIKELY;
+}
+
+
 static int battery_level_access_cb(uint16_t conn_handle, const uint16_t attr_handle,
                                    struct ble_gatt_access_ctxt *ctxt, void *_) {
     if (ctxt->op == BLE_GATT_ACCESS_OP_READ_CHR) {
@@ -44,7 +64,26 @@ static int bmp_access_cb(uint16_t conn_handle, const uint16_t attr_handle,
 static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     {
         .type = BLE_GATT_SVC_TYPE_PRIMARY,
-        .uuid = BLE_UUID16_DECLARE(0x180F),
+        .uuid = BLE_UUID16_DECLARE(0x180A), // ----------------------------------------- Device Information Service
+        .characteristics = (struct ble_gatt_chr_def[]){
+            {
+                .uuid = BLE_UUID16_DECLARE(0x2A27),
+                .access_cb = hw_rev_access_cb,
+                .flags = BLE_GATT_CHR_F_READ,
+            },
+            {
+                .uuid = BLE_UUID16_DECLARE(0x2A28),
+                .access_cb = sw_rev_access_cb,
+                .flags = BLE_GATT_CHR_F_READ,
+            },
+            {
+                0,
+            }
+        }
+    },
+    {
+        .type = BLE_GATT_SVC_TYPE_PRIMARY,
+        .uuid = BLE_UUID16_DECLARE(0x180F), // ----------------------------------------- Battery Service
         .characteristics = (struct ble_gatt_chr_def[]){
             {
                 .uuid = BLE_UUID16_DECLARE(0x2A19),
@@ -60,7 +99,7 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     {
         // Custom BikeTrack-Service
         .type = BLE_GATT_SVC_TYPE_PRIMARY,
-        .uuid = &bikeTrack_svc_uuid.u,
+        .uuid = &bikeTrack_svc_uuid.u, // ---------------------------------------------- Custom BikeTrack Service
         .characteristics = (struct ble_gatt_chr_def[])
         {
             {
