@@ -5,7 +5,7 @@
 
 static const char *TAG = "[I2C]";
 
-static i2c_master_bus_handle_t i2c_bus_handle = NULL;
+static i2c_master_bus_handle_t i2c_bus_h = NULL;
 
 
 /**
@@ -21,7 +21,7 @@ static i2c_master_bus_handle_t i2c_bus_handle = NULL;
  *     - An error code of type esp_err_t: If initialization fails.
  */
 esp_err_t init_i2c_bus(void) {
-    if (i2c_bus_handle != NULL) return ESP_OK;
+    if (i2c_bus_h != NULL) return ESP_OK;
 
     const i2c_master_bus_config_t bus_config = {
         .flags.enable_internal_pullup = true, // TODO: Use external Pull-Ups on PCB
@@ -32,7 +32,7 @@ esp_err_t init_i2c_bus(void) {
         .glitch_ignore_cnt = 7,
     };
 
-    const esp_err_t ret = i2c_new_master_bus(&bus_config, &i2c_bus_handle);
+    const esp_err_t ret = i2c_new_master_bus(&bus_config, &i2c_bus_h);
     if (ret == ESP_OK) {
         ESP_LOGI(TAG, "I2C Bus initialized on SDA:%d SCL:%d", I2C_MASTER_SDA, I2C_MASTER_SCL);
     } else {
@@ -54,11 +54,11 @@ esp_err_t init_i2c_bus(void) {
  *     - An error code of type esp_err_t: If deinitialization fails.
  */
 esp_err_t deinit_i2c_bus(void) {
-    if (i2c_bus_handle == NULL) return ESP_OK;
+    if (i2c_bus_h == NULL) return ESP_OK;
 
-    const esp_err_t ret = i2c_del_master_bus(i2c_bus_handle);
+    const esp_err_t ret = i2c_del_master_bus(i2c_bus_h);
     if (ret == ESP_OK) {
-        i2c_bus_handle = NULL;
+        i2c_bus_h = NULL;
         ESP_LOGI(TAG, "I2C Bus was deleted successfully");
     }
     return ret;
@@ -78,9 +78,9 @@ esp_err_t deinit_i2c_bus(void) {
  *     - NULL: If the initialization fails.
  */
 i2c_master_bus_handle_t get_i2c_bus_handle(void) {
-    if (i2c_bus_handle == NULL) {
+    if (i2c_bus_h == NULL) {
         ESP_LOGW(TAG, "Bus handle requested but not initialized! Initializing now...");
         init_i2c_bus();
     }
-    return i2c_bus_handle;
+    return i2c_bus_h;
 }
